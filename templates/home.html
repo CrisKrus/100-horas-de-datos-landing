@@ -21,30 +21,6 @@
     </head>
     <body>
         <div class="container mt-4">
-            <nav class="mb-4 navbar navbar-expand-lg navbar-light">
-                <a class="navbar-brand" href="https://ytplaylist-len.herokuapp.com/"><img src="https://i.imgur.com/PjcsUXm.png" height="60" alt=""></a>
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="https://github.com/sharatsachin/ytplaylist-len"> <img src="https://image.flaticon.com/icons/svg/25/25231.svg" height="30" alt="Github Icon"> </a>
-                    </li>
-                </ul>
-            </nav>
-            <hr class="my-4">
-            <div class="container">
-                <form method="POST">
-                    <label> Find the length of any YouTube playlist : </label>
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="youtube.com/playlist?list=ID" name="search_string">
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-primary">Get Length</button>
-                        </div>
-                    </div>
-                    <small id="emailHelp" class="form-text text-muted">
-                    	You can enter a playlist link, playlist ID or even a video link from the playlist!
-                    	<br> This only works with playlists with upto 500 videos. Need more than that? <a href="https://colab.research.google.com/drive/1D0nbJVcFMHmQyNFVpoL65LOUiejA-bAc">Check here.</a>
-                    </small>
-                </form>
-            </div>
             <hr class="my-4">
             {% if display_text %}
             <div class="container">
@@ -54,14 +30,14 @@
             </div>
             {% endif %}
             <hr class="my-4">
-            <footer class="page-footer font-small cyan darken-3">
-                <div class="footer-copyright text-center py-3">
-                	Made with ❤ by <a href="https://github.com/sharatsachin/"> Sharat Sachin</a>
-                </div>
-                <div class="footer-copyright text-center py-3">
-                    If you found this app helpful, you can support me by <a href="https://www.buymeacoffee.com/sharat"> buying me a pizza here.</a>
-                </div>
-            </footer>
+{#            <footer class="page-footer font-small cyan darken-3">#}
+{#                <div class="footer-copyright text-center py-3">#}
+{#                	Made with ❤ by <a href="https://github.com/sharatsachin/"> Sharat Sachin</a>#}
+{#                </div>#}
+{#                <div class="footer-copyright text-center py-3">#}
+{#                    If you found this app helpful, you can support me by <a href="https://www.buymeacoffee.com/sharat"> buying me a pizza here.</a>#}
+{#                </div>#}
+{#            </footer>#}
         </div>
         <!-- Optional JavaScript -->
         <!-- jQuery first, then Popper.js, then Bootstrap JS -->
