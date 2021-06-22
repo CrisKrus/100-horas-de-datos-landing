@@ -22,16 +22,6 @@ URL2 = 'https://www.googleapis.com/youtube/v3/videos?&part=contentDetails&id={}&
        '}&fields=items/contentDetails/duration '
 
 
-# To get the playlistId from the link
-def get_id(playlist_link):
-    p = re.compile('^([\S]+list=)?([\w_-]+)[\S]*$')
-    m = p.match(playlist_link)
-    if m:
-        return m.group(2)
-    else:
-        return 'invalid_playlist_link'
-
-
 def parse_time(a):
     seconds, days = a.seconds, a.days
     hours, rest_hours = divmod(seconds, 3600)
@@ -61,9 +51,7 @@ def home():
 
     else:
 
-        # get playlist link/id as input from the form
-        playlist_link = request.form.get('search_string').strip()
-        playlist_id = get_id(playlist_link)
+        playlist_id = 'PLZh1qmaTeQ-qvyJ9GOLNEwESIGTQdHAoI'
 
         # initializing variables
         next_page = ''  # to hold next_page token, empty for first page
