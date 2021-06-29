@@ -44,49 +44,29 @@ app = Flask(__name__, static_url_path='/static')
 app._static_folder = '/static/'
 
 
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/", methods=['GET'])
 def home():
     next_page = ''
     videos_counter = 0
     total_playlist_length = timedelta(0)
     display_text = []
 
-    # when we make requests, we get the response in pages of 50 items
-    # which we process one page at total_playlist_length time
     while True:
-        vid_list = []
-
-        try:
-            results = json.loads(requests.get(URL1.format(API_KEY, PLAYLIST_ID) + next_page).text)
-
-            for video in results['items']:
-                vid_list.append(video['contentDetails']['videoId'])
-
-        except KeyError:
-            display_text = [results['error']['message']]
+        vid_list, next_page_token, error = get_video_list(next_page)
+        if error is not None:
+            display_text = error
             break
 
-        # now vid_list contains list of all videos in playlist one page of response
-        url_list = ','.join(vid_list)
-        # updating counter
-
-        try:
-            # now to get the durations of all videos in url_list
-            op = json.loads(requests.get(URL2.format(url_list, API_KEY)).text)
-
-            # add all the durations to total_playlist_length
-            for video in op['items']:
-                total_playlist_length += isodate.parse_duration(video['contentDetails']['duration'])
-
-        except KeyError:
-            display_text = [op['error']['message']]
+        duration, error = calculate_duration(vid_list)
+        if error is not None:
+            display_text = error
             break
 
+        total_playlist_length += duration
         videos_counter += len(vid_list)
-        # if 'nextPageToken' is not in results, it means it is the last page of the response
-        # otherwise, or if the videos_counter has not yet exceeded 500
-        if 'nextPageToken' in results and videos_counter < 500:
-            next_page = results['nextPageToken']
+
+        if is_last_page(next_page_token) and videos_counter < 500:
+            next_page = next_page_token
         else:
             if videos_counter >= 500:
                 display_text = ['No of videos limited to 500.']
@@ -94,6 +74,43 @@ def home():
             break
 
     return render_template("home.html", display_text=display_text)
+
+
+def calculate_duration(vid_list):
+    url_list = ','.join(vid_list)
+    total_duration = timedelta(0)
+
+    try:
+        video_durations = json.loads(requests.get(URL2.format(url_list, API_KEY)).text)
+
+        for video in video_durations['items']:
+            total_duration += isodate.parse_duration(video['contentDetails']['duration'])
+
+        return total_duration, None
+    except KeyError:
+        return None, [video_durations['error']['message']]
+
+
+def get_video_list(next_page):
+    vid_list = []
+
+    try:
+        results = json.loads(requests.get(URL1.format(API_KEY, PLAYLIST_ID) + next_page).text)
+
+        for video in results['items']:
+            vid_list.append(video['contentDetails']['videoId'])
+
+        if 'nextPageToken' in results:
+            return vid_list, results['nextPageToken'], None
+        else:
+            return vid_list, None, None
+
+    except KeyError:
+        return None, None, [results['error']['message']]
+
+
+def is_last_page(next_page_token):
+    return next_page_token is not None
 
 
 def format_message(total_playlist_length, videos_counter):
