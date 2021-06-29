@@ -9,18 +9,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 API_KEY = os.getenv('API_KEY')
-PLAYLIST_ID = os.getenv('PLAYLIST_ID')
-
-URL1 = 'https://www.googleapis.com/youtube/v3/playlistItems?' \
-       'part=contentDetails' \
-       '&maxResults=50' \
-       '&fields=items/contentDetails/videoId,nextPageToken' \
-       '&key={}' \
-       '&playlistId={}' \
-       '&pageToken= '
-URL2 = 'https://www.googleapis.com/youtube/v3/videos?&part=contentDetails&id={}&key={' \
-       '}&fields=items/contentDetails/duration '
-
 
 app = Flask(__name__, static_url_path='/static')
 app._static_folder = '/static/'
@@ -51,7 +39,7 @@ def home():
             next_page = next_page_token
         else:
             if videos_counter >= 500:
-                display_text = ['No of videos limited to 500.']
+                display_text = ['Número de vídeos limitado a 500.']
             display_text += format_message(total_playlist_length, videos_counter)
             break
 
@@ -59,11 +47,16 @@ def home():
 
 
 def calculate_duration(vid_list):
+    url = 'https://www.googleapis.com/youtube/v3/videos?' \
+          '&part=contentDetails' \
+          '&id={}' \
+          '&key={}' \
+          '&fields=items/contentDetails/duration '
     url_list = ','.join(vid_list)
     total_duration = timedelta(0)
 
     try:
-        video_durations = json.loads(requests.get(URL2.format(url_list, API_KEY)).text)
+        video_durations = json.loads(requests.get(url.format(url_list, API_KEY)).text)
 
         for video in video_durations['items']:
             total_duration += isodate.parse_duration(video['contentDetails']['duration'])
@@ -74,10 +67,18 @@ def calculate_duration(vid_list):
 
 
 def get_video_list(next_page):
+    url = 'https://www.googleapis.com/youtube/v3/playlistItems?' \
+           'part=contentDetails' \
+           '&maxResults=50' \
+           '&fields=items/contentDetails/videoId,nextPageToken' \
+           '&key={}' \
+           '&playlistId={}' \
+           '&pageToken= '
+    playlist_id = os.getenv('PLAYLIST_ID')
     vid_list = []
 
     try:
-        results = json.loads(requests.get(URL1.format(API_KEY, PLAYLIST_ID) + next_page).text)
+        results = json.loads(requests.get(url.format(API_KEY, playlist_id) + next_page).text)
 
         for video in results['items']:
             vid_list.append(video['contentDetails']['videoId'])
