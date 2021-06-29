@@ -22,24 +22,6 @@ URL2 = 'https://www.googleapis.com/youtube/v3/videos?&part=contentDetails&id={}&
        '}&fields=items/contentDetails/duration '
 
 
-def parse_time(a):
-    seconds, days = a.seconds, a.days
-    hours, rest_hours = divmod(seconds, 3600)
-    minutes, seconds = divmod(rest_hours, 60)
-    formatted_string = ''
-    if days:
-        hours += days * 24
-    if hours:
-        formatted_string += ' {} hour{},'.format(hours, 's' if hours != 1 else '')
-    if minutes:
-        formatted_string += ' {} minute{},'.format(minutes, 's' if minutes != 1 else '')
-    if seconds:
-        formatted_string += ' {} second{}'.format(seconds, 's' if seconds != 1 else '')
-    if formatted_string == '':
-        formatted_string = '0 seconds'
-    return formatted_string.strip().strip(',')
-
-
 app = Flask(__name__, static_url_path='/static')
 app._static_folder = '/static/'
 
@@ -107,6 +89,24 @@ def get_video_list(next_page):
 
     except KeyError:
         return None, None, [results['error']['message']]
+
+
+def parse_time(a):
+    seconds, days = a.seconds, a.days
+    hours, rest_hours = divmod(seconds, 3600)
+    minutes, seconds = divmod(rest_hours, 60)
+    formatted_string = ''
+    if days:
+        hours += days * 24
+    if hours:
+        formatted_string += ' {} hour{},'.format(hours, 's' if hours != 1 else '')
+    if minutes:
+        formatted_string += ' {} minute{},'.format(minutes, 's' if minutes != 1 else '')
+    if seconds:
+        formatted_string += ' {} second{}'.format(seconds, 's' if seconds != 1 else '')
+    if formatted_string == '':
+        formatted_string = '0 seconds'
+    return formatted_string.strip().strip(',')
 
 
 def is_last_page(next_page_token):
