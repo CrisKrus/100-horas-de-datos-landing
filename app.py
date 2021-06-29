@@ -15,7 +15,7 @@ URL1 = 'https://www.googleapis.com/youtube/v3/playlistItems?' \
        'part=contentDetails' \
        '&maxResults=50' \
        '&fields=items/contentDetails/videoId,nextPageToken' \
-       '&key={}'\
+       '&key={}' \
        '&playlistId={}' \
        '&pageToken= '
 URL2 = 'https://www.googleapis.com/youtube/v3/videos?&part=contentDetails&id={}&key={' \
@@ -26,18 +26,18 @@ def parse_time(a):
     seconds, days = a.seconds, a.days
     hours, rest_hours = divmod(seconds, 3600)
     minutes, seconds = divmod(rest_hours, 60)
-    formated_string = ''
+    formatted_string = ''
     if days:
         hours += days * 24
     if hours:
-        formated_string += ' {} hour{},'.format(hours, 's' if hours != 1 else '')
+        formatted_string += ' {} hour{},'.format(hours, 's' if hours != 1 else '')
     if minutes:
-        formated_string += ' {} minute{},'.format(minutes, 's' if minutes != 1 else '')
+        formatted_string += ' {} minute{},'.format(minutes, 's' if minutes != 1 else '')
     if seconds:
-        formated_string += ' {} second{}'.format(seconds, 's' if seconds != 1 else '')
-    if formated_string == '':
-        formated_string = '0 seconds'
-    return formated_string.strip().strip(',')
+        formatted_string += ' {} second{}'.format(seconds, 's' if seconds != 1 else '')
+    if formatted_string == '':
+        formatted_string = '0 seconds'
+    return formatted_string.strip().strip(',')
 
 
 app = Flask(__name__, static_url_path='/static')
@@ -98,11 +98,13 @@ def home():
         else:
             if videos_counter >= 500:
                 display_text = ['No of videos limited to 500.']
-            display_text += ['Número de vídeos: ' + str(videos_counter),
-                             'Tamaño total de la lista: ' + parse_time(total_playlist_length),
-                             'Esto significa que tenemos un {:.2f}% del reto conseguido'.format(total_playlist_hours),
-                             'Y que necesitamos hacer al menos {:.2f} horas a la semana para llegar a tiempo'.format(missing_challenge_hours / weeks_to_end_the_year),
-                             ]
+            display_text += [
+                'Número de vídeos: ' + str(videos_counter),
+                'Tamaño total de la lista: ' + parse_time(total_playlist_length),
+                'Esto significa que tenemos un {:.2f}% del reto conseguido'.format(total_playlist_hours),
+                'Y que necesitamos hacer al menos {:.2f} horas a la semana para llegar a tiempo'.format(
+                    missing_challenge_hours / weeks_to_end_the_year),
+            ]
             break
 
     return render_template("home.html", display_text=display_text)
