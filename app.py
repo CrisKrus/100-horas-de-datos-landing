@@ -98,10 +98,10 @@ def home():
         else:
             if videos_counter >= 500:
                 display_text = ['No of videos limited to 500.']
-            display_text += ['No of videos : ' + str(videos_counter),
-                             'Total length of playlist : ' + parse_time(total_playlist_length),
-                             'This means a {:.2f}% of the challenge'.format(total_playlist_hours),
-                             'And we need to do at least {:.2f} hours per week to end on time'.format(missing_challenge_hours / weeks_to_end_the_year),
+            display_text += ['Número de vídeos: ' + str(videos_counter),
+                             'Tamaño total de la lista: ' + parse_time(total_playlist_length),
+                             'Esto significa que tenemos un {:.2f}% del reto conseguido'.format(total_playlist_hours),
+                             'Y que necesitamos hacer al menos {:.2f} horas a la semana para llegar a tiempo'.format(missing_challenge_hours / weeks_to_end_the_year),
                              ]
             break
 
